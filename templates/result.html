@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracted Amounts</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Extracted Amounts</h1>
+
+        <!-- Display Uploaded Image -->
+        {% if image_path %}
+            <img src="{{ image_path }}" alt="Uploaded Image">
+        {% endif %}
+
+        <!-- Display Extracted Amounts -->
+        {% if extracted_amounts %}
+            <div class="result">
+                <h2>Amounts Found:</h2>
+                <ul>
+                    {% for amount in extracted_amounts %}
+                        <li>{{ amount }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <button id="saveButton" class="btn1">Save Extracted Amounts</button>
+        {% else %}
+            <p class="no-results">No amounts were found in the uploaded image.</p>
+        {% endif %}
+
+        <!-- Upload Another Image Button -->
+        <a href="/" class="btn">Upload Another Image</a>
+    </div>
+    <script>
+    document.getElementById('saveButton').addEventListener('click', function() {
+        // Get the extracted amounts from the list
+        const amounts = Array.from(document.querySelectorAll('.result li')).map(li => li.textContent);
+    
+        // Convert the amounts to CSV format
+        const csvContent = 'Amount\n' + amounts.join('\n'); // Add header and amounts
+    
+        // Create a Blob with the CSV content
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+    
+        // Create a download link
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'extracted_amounts.csv'; // File name
+        link.click();
+    
+        // Clean up the URL object
+        URL.revokeObjectURL(link.href);
+    });
+    </script>
+</body>
+</html>

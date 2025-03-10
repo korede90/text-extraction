@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Text Extraction</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Text Extraction</h1>
+        <form id="uploadForm" action="/upload" method="POST" enctype="multipart/form-data">
+            <!-- File Input with Custom Styling -->
+            <label for="fileInput" class="file-upload-label">Choose Image</label>
+            <input type="file" name="file" id="fileInput" accept="image/*" required>
+            <br>
+            <!-- Image Preview -->
+            <img id="imagePreview" src="#" alt="Image Preview">
+            <!-- Submit Button -->
+            <button type="submit">Extract Text</button>
+            <!-- Loading Indicator -->
+            <div class="loading" id="loading">Processing... Please wait.</div>
+            <!-- Error Message -->
+            <div class="error" id="error"></div>
+        </form>
+    </div>
+
+    <script>
+        // Show image preview when a file is selected
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Show loading indicator on form submission
+        document.getElementById('uploadForm').addEventListener('submit', function() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('error').style.display = 'none';
+        });
+
+        // Handle errors (if any)
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        if (error) {
+            document.getElementById('error').textContent = error;
+            document.getElementById('error').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
